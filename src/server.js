@@ -64,8 +64,3 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.listen(3000, () => console.log('Secure server running'));
 
-// ❌ Vulnérabilité XSS volontaire
-app.get("/vuln", (req, res) => {
-    const name = req.query.name || "guest";
-    res.send(`<h1>Hello ${name}</h1>`); // XSS : aucune sanitisation
-});
