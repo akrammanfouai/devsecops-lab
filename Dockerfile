@@ -3,6 +3,7 @@ WORKDIR /app
 
 # Copie des dépendances
 COPY src/package*.json ./
+#RUN npm install --omit=dev && npm cache clean --force
 RUN npm ci --only=production && npm cache clean --force
 
 COPY src/ ./
