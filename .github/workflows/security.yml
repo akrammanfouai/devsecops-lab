@@ -181,6 +181,8 @@ jobs:
           else
             echo "All security checks passed" >> $GITHUB_STEP_SUMMARY
           fi
+
+
   dast:
     name: "⚡ DAST"
     runs-on: ubuntu-latest
@@ -195,12 +197,16 @@ jobs:
       - name: Load and run app
         run: |
           docker load < image.tar
-          docker run -d -p 3000:3000 --name app vuln-app:${{ github.sha }}
-          sleep 5
+          docker run -d -p 3000:3000 --name app \
+            -e JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+            -e ADMIN_USER='${{ secrets.ADMIN_USER }}' \
+            -e ADMIN_PASS='${{ secrets.ADMIN_PASS }}' \
+            -e NODE_ENV=production \
+            vuln-app:${{ github.sha }}
+          sleep 10
 
       - name: OWASP ZAP Baseline
         uses: zaproxy/action-baseline@v0.10.0
         with:
           target: 'http://localhost:3000'
           allow_issue_writing: false
-
